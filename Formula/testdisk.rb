@@ -2,6 +2,7 @@ class Testdisk < Formula
   desc "Powerful free data recovery utility"
   homepage "https://www.cgsecurity.org/wiki/TestDisk"
   url "https://www.cgsecurity.org/testdisk-7.0.tar.bz2"
+  depends_on "e2fsprogs" => :optional
   sha256 "00bb3b6b22e6aba88580eeb887037aef026968c21a87b5f906c6652cbee3442d"
 
   bottle do
@@ -16,10 +17,15 @@ class Testdisk < Formula
   end
 
   def install
+    if build.with? "e2fsprogs" then
+      ENV["CFLAGS"] = "-lcom_err"
+    end
+
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
                           "--disable-silent-rules",
                           "--prefix=#{prefix}"
+
     system "make", "install"
   end
 
